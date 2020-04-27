@@ -3,8 +3,14 @@
 const express = require('express'); // express for routing
 const bodyParser = require('body-parser');
 
+const registerArticleRoutes = require('./api/articles');
+
 // CONFIGURE APP
 const app = express();
+
+// ROUTER
+
+const router = express.Router();
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -18,6 +24,23 @@ const port = process.env.PORT || 4000; // set our port
 app.get('/', function (_, res) {
   res.send('Welcome to our API');
 });
+
+router.get('/', function (req, res) {
+  res.json({ message: 'hooray! welcome to our api!' });
+});
+
+router
+  .route('/ping')
+  .post(function (req, res) {
+    res.send('You POST a PING');
+  })
+  .get(function (req, res) {
+    res.send('You GET a PING');
+  });
+
+registerArticleRoutes(router);
+
+app.use('/api', router);
 
 // START THE SERVER
 // =============================================================================
