@@ -1,0 +1,35 @@
+on: [push]
+
+name: Deploy CRUD API to Azure
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout GitHub Action' 
+      uses: actions/checkout@master
+
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Setup Node 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+
+    - name: 'npm install, build, and test'
+      run: |
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+
+    - name: 'Deploy to Azure'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'crud-api-node'
+
+    - name: logout
+      run: |
+        az logout
